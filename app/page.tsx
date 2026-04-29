@@ -1,4 +1,3 @@
-// Updated standalone version - April 29
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -40,7 +39,7 @@ export default function ArcTradingApp() {
             <div className="w-11 h-11 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center text-3xl font-bold">A</div>
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Arc Trade</h1>
-              <p className="text-cyan-400 text-sm -mt-1">Simple Trading</p>
+              <p className="text-cyan-400 text-sm -mt-1">Simple Trading on Arc Network</p>
             </div>
           </div>
           <div className="text-sm text-cyan-400">Arc Testnet</div>
@@ -56,7 +55,7 @@ export default function ArcTradingApp() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Chart Area */}
+          {/* Chart */}
           <div className="lg:col-span-2 bg-zinc-950 border border-zinc-800 rounded-3xl p-8">
             <div className="flex justify-between items-start mb-8">
               <div>
@@ -83,8 +82,18 @@ export default function ArcTradingApp() {
             <h2 className="text-3xl font-semibold mb-10">Instant Trade</h2>
 
             <div className="flex gap-4 mb-12">
-              <button onClick={() => setSide('buy')} className={`flex-1 py-6 rounded-2xl font-bold text-xl ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}>BUY</button>
-              <button onClick={() => setSide('sell')} className={`flex-1 py-6 rounded-2xl font-bold text-xl ${side === 'sell' ? 'bg-red-500' : 'bg-zinc-900'}`}>SELL</button>
+              <button 
+                onClick={() => setSide('buy')} 
+                className={`flex-1 py-6 rounded-2xl font-bold text-xl ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}
+              >
+                BUY
+              </button>
+              <button 
+                onClick={() => setSide('sell')} 
+                className={`flex-1 py-6 rounded-2xl font-bold text-xl ${side === 'sell' ? 'bg-red-500 text-white' : 'bg-zinc-900'}`}
+              >
+                SELL
+              </button>
             </div>
 
             <div className="mb-12">
@@ -103,16 +112,15 @@ export default function ArcTradingApp() {
 
             <button
               onClick={executeTrade}
-              className="w-full py-8 rounded-3xl text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 text-black mt-auto"
+              className="w-full py-8 rounded-3xl text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 text-black mt-auto hover:brightness-110 transition"
             >
               {side === 'buy' ? 'BUY NOW' : 'SELL NOW'}
             </button>
 
-            <p className="text-center text-xs text-zinc-500 mt-8">Super low fees • Instant on Arc</p>
+            <p className="text-center text-xs text-zinc-500 mt-8">Super low fees • Instant settlement</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
-Force update for Vercel
