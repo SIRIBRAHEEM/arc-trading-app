@@ -6,6 +6,7 @@ body {
   background: #0a0a0a;
   color: #e0e0e0;
 }
+
 .glass {
   background: rgba(20, 20, 30, 0.8);
   backdrop-filter: blur(12px);
