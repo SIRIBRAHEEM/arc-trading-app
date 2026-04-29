@@ -1,3 +1,4 @@
+// Updated standalone version - April 29
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -114,3 +115,4 @@ export default function ArcTradingApp() {
     </div>
   );
 }
+Force update for Vercel
