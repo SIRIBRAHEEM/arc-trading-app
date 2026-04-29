@@ -4,36 +4,50 @@ import { useState, useEffect } from 'react';
 import { RainbowKitProvider, ConnectButton } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { config, arcTestnet } from '../lib/arc';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { http } from 'wagmi';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { ArrowUp, ArrowDown, Wallet, TrendingUp } from 'lucide-react';
+import { ArrowUp, ArrowDown, Wallet } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 
 const queryClient = new QueryClient();
 
+const arcTestnet = {
+  id: 5042002,
+  name: 'Arc Testnet',
+  nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 6 },
+  rpcUrls: { default: { http: ['https://rpc.testnet.arc.network'] } },
+  blockExplorers: { default: { name: 'ArcScan', url: 'https://testnet.arcscan.app' } },
+} as const;
+
+const config = getDefaultConfig({
+  appName: 'Arc Simple Trade',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'demo',
+  chains: [arcTestnet],
+  ssr: true,
+});
+
 const mockChartData = Array.from({ length: 30 }, (_, i) => ({
   time: i,
-  price: 2400 + Math.random() * 200 - 50,
+  price: 2450 + Math.random() * 150,
 }));
 
 export default function ArcTradingApp() {
   const [price, setPrice] = useState(2456.78);
-  const [change, setChange] = useState(2.34);
+  const [change] = useState(2.34);
   const [amount, setAmount] = useState(100);
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
   const creator = "0x2EdBe6602e8caE94ff9d3f7013Ddf78442813a5f";
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPrice(p => p + (Math.random() - 0.5) * 5);
-    }, 3000);
+      setPrice(p => Math.max(2300, p + (Math.random() - 0.5) * 8));
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 
   const executeTrade = () => {
-    toast.success(`${side.toUpperCase()} ${amount} USDC executed on Arc Testnet!`, {
-      description: `Tx: 0x${Math.random().toString(16).slice(2)}...`,
-    });
+    toast.success(`${side.toUpperCase()} ${amount} USDC on Arc Testnet!`);
   };
 
   return (
@@ -43,51 +57,40 @@ export default function ArcTradingApp() {
           <div className="min-h-screen bg-black text-white">
             <Toaster position="top-center" />
 
-            {/* Header */}
-            <header className="border-b border-cyan-900/50 glass sticky top-0 z-50">
-              <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <header className="border-b border-cyan-900/50 bg-zinc-950 sticky top-0 z-50">
+              <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-xl flex items-center justify-center">
-                    <span className="text-xl font-bold">A</span>
-                  </div>
+                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold">A</div>
                   <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Arc Trade</h1>
-                    <p className="text-xs text-cyan-400">Simple • Fast • On Arc</p>
+                    <h1 className="text-3xl font-bold">Arc Trade</h1>
+                    <p className="text-cyan-400 text-sm">Simple Trading on Arc Network</p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="text-xs px-3 py-1.5 bg-zinc-900 rounded-full border border-cyan-900 flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    Arc Testnet
-                  </div>
-                  <ConnectButton />
-                </div>
+                <ConnectButton />
               </div>
             </header>
 
-            <div className="max-w-7xl mx-auto px-6 py-8">
-              {/* Creator Badge */}
-              <div className="mb-6 flex justify-center">
-                <div className="px-4 py-2 bg-zinc-900/80 border border-cyan-500/30 rounded-2xl text-sm flex items-center gap-2">
+            <div className="max-w-7xl mx-auto px-6 py-10">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 bg-zinc-900 border border-cyan-500/30 px-5 py-2 rounded-full text-sm">
                   <Wallet className="w-4 h-4 text-cyan-400" />
-                  Powered by <span className="font-mono text-cyan-400">{creator.slice(0,6)}...{creator.slice(-4)}</span>
+                  Created by {creator.slice(0, 6)}...{creator.slice(-4)}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid lg:grid-cols-3 gap-6">
                 {/* Chart */}
-                <div className="lg:col-span-2 glass rounded-3xl p-6">
-                  <div className="flex justify-between mb-6">
+                <div className="lg:col-span-2 bg-zinc-950 border border-zinc-800 rounded-3xl p-8">
+                  <div className="flex justify-between items-start mb-8">
                     <div>
-                      <div className="text-4xl font-semibold tabular-nums">{price.toFixed(2)} <span className="text-lg text-zinc-400">USDC</span></div>
-                      <div className={`flex items-center gap-1 ${change > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        {change > 0 ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                        {change.toFixed(2)}% (24h)
+                      <div className="text-5xl font-mono font-semibold tabular-nums">${price.toFixed(2)}</div>
+                      <div className="flex items-center gap-2 text-emerald-400">
+                        <ArrowUp className="w-5 h-5" /> +{change}% today
                       </div>
                     </div>
-                    <div className="text-right text-sm text-zinc-400">
-                      USDC / ETH
+                    <div className="text-right">
+                      <div className="text-xl font-medium">USDC / ETH</div>
+                      <div className="text-xs text-zinc-500">Arc Testnet</div>
                     </div>
                   </div>
 
@@ -96,46 +99,42 @@ export default function ArcTradingApp() {
                       <XAxis dataKey="time" hide />
                       <YAxis hide />
                       <Tooltip />
-                      <Line type="natural" dataKey="price" stroke="#00f5ff" strokeWidth={3} dot={false} />
+                      <Line type="natural" dataKey="price" stroke="#22d3ee" strokeWidth={4} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
 
                 {/* Trade Panel */}
-                <div className="glass rounded-3xl p-8 flex flex-col">
-                  <h2 className="text-2xl font-semibold mb-8">Instant Trade</h2>
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 flex flex-col">
+                  <h2 className="text-3xl font-semibold mb-8">Instant Trade</h2>
 
-                  <div className="flex gap-2 mb-8">
-                    <button onClick={() => setSide('buy')} className={`flex-1 py-4 rounded-2xl font-semibold ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}>BUY</button>
-                    <button onClick={() => setSide('sell')} className={`flex-1 py-4 rounded-2xl font-semibold ${side === 'sell' ? 'bg-red-500 text-white' : 'bg-zinc-900'}`}>SELL</button>
+                  <div className="flex gap-3 mb-10">
+                    <button onClick={() => setSide('buy')} className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}>BUY</button>
+                    <button onClick={() => setSide('sell')} className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'sell' ? 'bg-red-500' : 'bg-zinc-900'}`}>SELL</button>
                   </div>
 
-                  <div className="space-y-8 flex-1">
-                    <div>
-                      <label className="text-sm text-zinc-400 block mb-2">Amount (USDC)</label>
-                      <input
-                        type="range"
-                        min="10"
-                        max="10000"
-                        step="10"
-                        value={amount}
-                        onChange={(e) => setAmount(Number(e.target.value))}
-                        className="w-full accent-cyan-400"
-                      />
-                      <div className="text-5xl font-mono font-semibold mt-4 tabular-nums">{amount}</div>
-                    </div>
-
-                    <button
-                      onClick={executeTrade}
-                      className="w-full py-6 text-xl font-bold rounded-3xl bg-gradient-to-r from-cyan-400 to-purple-500 text-black hover:scale-105 transition-transform"
-                    >
-                      {side === 'buy' ? 'BUY NOW' : 'SELL NOW'}
-                    </button>
+                  <div className="mb-10">
+                    <div className="text-zinc-400 mb-3">Amount in USDC</div>
+                    <input
+                      type="range"
+                      min="10"
+                      max="5000"
+                      step="10"
+                      value={amount}
+                      onChange={(e) => setAmount(Number(e.target.value))}
+                      className="w-full accent-cyan-400"
+                    />
+                    <div className="text-6xl font-mono font-bold mt-6">{amount}</div>
                   </div>
 
-                  <div className="text-center text-xs text-zinc-500 mt-auto pt-8">
-                    Gas fee ≈ $0.0001 • Instant settlement on Arc
-                  </div>
+                  <button
+                    onClick={executeTrade}
+                    className="mt-auto w-full py-7 rounded-3xl text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black hover:brightness-110 transition"
+                  >
+                    {side === 'buy' ? 'BUY NOW' : 'SELL NOW'}
+                  </button>
+
+                  <p className="text-center text-xs text-zinc-500 mt-6">Extremely low fees on Arc Network</p>
                 </div>
               </div>
             </div>
