@@ -5,9 +5,8 @@ import { RainbowKitProvider, ConnectButton } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { http } from 'wagmi';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { ArrowUp, ArrowDown, Wallet } from 'lucide-react';
+import { ArrowUp, Wallet } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 
 const queryClient = new QueryClient();
@@ -47,7 +46,9 @@ export default function ArcTradingApp() {
   }, []);
 
   const executeTrade = () => {
-    toast.success(`${side.toUpperCase()} ${amount} USDC on Arc Testnet!`);
+    toast.success(`${side.toUpperCase()} ${amount} USDC on Arc Testnet!`, {
+      description: "Transaction successful 🎉",
+    });
   };
 
   return (
@@ -63,7 +64,7 @@ export default function ArcTradingApp() {
                   <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold">A</div>
                   <div>
                     <h1 className="text-3xl font-bold">Arc Trade</h1>
-                    <p className="text-cyan-400 text-sm">Simple Trading on Arc Network</p>
+                    <p className="text-cyan-400 text-sm">Simple • Beautiful • On Arc</p>
                   </div>
                 </div>
                 <ConnectButton />
@@ -74,24 +75,20 @@ export default function ArcTradingApp() {
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 bg-zinc-900 border border-cyan-500/30 px-5 py-2 rounded-full text-sm">
                   <Wallet className="w-4 h-4 text-cyan-400" />
-                  Created by {creator.slice(0, 6)}...{creator.slice(-4)}
+                  Created by {creator.slice(0,6)}...{creator.slice(-4)}
                 </div>
               </div>
 
               <div className="grid lg:grid-cols-3 gap-6">
-                {/* Chart */}
                 <div className="lg:col-span-2 bg-zinc-950 border border-zinc-800 rounded-3xl p-8">
-                  <div className="flex justify-between items-start mb-8">
+                  <div className="flex justify-between mb-8">
                     <div>
-                      <div className="text-5xl font-mono font-semibold tabular-nums">${price.toFixed(2)}</div>
-                      <div className="flex items-center gap-2 text-emerald-400">
-                        <ArrowUp className="w-5 h-5" /> +{change}% today
+                      <div className="text-5xl font-mono font-semibold">${price.toFixed(2)}</div>
+                      <div className="flex items-center gap-1 text-emerald-400 mt-1">
+                        <ArrowUp className="w-5 h-5" /> +{change}% (24h)
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xl font-medium">USDC / ETH</div>
-                      <div className="text-xs text-zinc-500">Arc Testnet</div>
-                    </div>
+                    <div className="text-xl">USDC / ETH</div>
                   </div>
 
                   <ResponsiveContainer width="100%" height={420}>
@@ -104,17 +101,26 @@ export default function ArcTradingApp() {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Trade Panel */}
                 <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 flex flex-col">
                   <h2 className="text-3xl font-semibold mb-8">Instant Trade</h2>
 
                   <div className="flex gap-3 mb-10">
-                    <button onClick={() => setSide('buy')} className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}>BUY</button>
-                    <button onClick={() => setSide('sell')} className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'sell' ? 'bg-red-500' : 'bg-zinc-900'}`}>SELL</button>
+                    <button 
+                      onClick={() => setSide('buy')} 
+                      className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'buy' ? 'bg-emerald-500 text-black' : 'bg-zinc-900'}`}
+                    >
+                      BUY
+                    </button>
+                    <button 
+                      onClick={() => setSide('sell')} 
+                      className={`flex-1 py-5 rounded-2xl font-bold text-lg ${side === 'sell' ? 'bg-red-500 text-white' : 'bg-zinc-900'}`}
+                    >
+                      SELL
+                    </button>
                   </div>
 
-                  <div className="mb-10">
-                    <div className="text-zinc-400 mb-3">Amount in USDC</div>
+                  <div>
+                    <div className="text-zinc-400 mb-3">Amount (USDC)</div>
                     <input
                       type="range"
                       min="10"
@@ -124,17 +130,15 @@ export default function ArcTradingApp() {
                       onChange={(e) => setAmount(Number(e.target.value))}
                       className="w-full accent-cyan-400"
                     />
-                    <div className="text-6xl font-mono font-bold mt-6">{amount}</div>
+                    <div className="text-6xl font-mono font-bold mt-6 text-center">{amount}</div>
                   </div>
 
                   <button
                     onClick={executeTrade}
-                    className="mt-auto w-full py-7 rounded-3xl text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black hover:brightness-110 transition"
+                    className="mt-auto w-full py-7 rounded-3xl text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 text-black hover:brightness-110"
                   >
                     {side === 'buy' ? 'BUY NOW' : 'SELL NOW'}
                   </button>
-
-                  <p className="text-center text-xs text-zinc-500 mt-6">Extremely low fees on Arc Network</p>
                 </div>
               </div>
             </div>
