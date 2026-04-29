@@ -1,5 +1,4 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { http } from 'wagmi';
 
 export const arcTestnet = {
   id: 5042002,
