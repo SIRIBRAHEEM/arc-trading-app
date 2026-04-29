@@ -14,7 +14,7 @@ export default function ArcTradingApp() {
   const [price, setPrice] = useState(2456.78);
   const [amount, setAmount] = useState(100);
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
-  const creator = "0x2EdBe6602e8caE94ff9d3f7013Ddf78442813a5f";
+  const creator = "siribraheem";
 
   useEffect(() => {
     const interval = setInterval(() => {
